@@ -1,5 +1,15 @@
-import { useEffect, useState, useReducer, useRef } from "react";
+import { useEffect, useState, useReducer, useRef, useMemo } from "react";
 import { getPerson } from "./getPerson";
+
+//function carrying out expensive calculation
+function sillyExpensiveFunction(): number {
+  console.log("Executing silly function");
+  let sum = 0;
+  for (let i = 0; i < 10000; i++) {
+    sum += i;
+  }
+  return sum;
+}
 
 type State = {
   name: string | undefined;
@@ -58,6 +68,8 @@ export function PersonScore() {
     }
   }, [loading]);
 
+  const expensiveValue = useMemo(() => sillyExpensiveFunction(), []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -66,6 +78,7 @@ export function PersonScore() {
     <div>
       <h1>{name}</h1>
       <p>Score: {score}</p>
+      <p>Expensive Value: {expensiveValue}</p>
       <button
         ref={addButtonRef}
         onClick={() => dispatch({ type: "increment" })}
